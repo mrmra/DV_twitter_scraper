@@ -14,6 +14,7 @@ for the Wordle (so that the load time for the graphic is eliminated, passwords b
 
 Since the server this will be on uses PHP, the twitter-scraping should be done in PHP, or perhaps PHP calling a Python script, if the server allows.
 
+FROM JASON DAVIES:
 
 # Word Cloud Layout
 
