@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="keywords" ...>
+<meta name="description" Twitter Terms>
+<script src="d3.js"></script>
+<script src="d3.layout.cloud.js"></script>
+<script src="jquery-1.9.1.min.js"></script>
+<script src="autolink.js"></script>
+<script src="codebird.js"></script>
+<script src="oauth.js"></script>
+<script src="sha1.js"></script>
+<script src="dv_on_twitter_app.js"></script>
+
+<header>
+<title>Words Associated with Domestic Violence, Stalking, and Sexual Assault</title>
+<style>
+div.tooltip {   
+  position: absolute;             
+  text-align: center;           
+  width: 60px;                  
+  height: 28px;                 
+  padding: 20px;             
+  font: 12px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;         
+}
+
+#loadscreen{
+margin-right: auto;
+margin-left: auto;
+position: absolute;
+width: 70%;
+height: 500px;
+z-index: 100;
+background-color: black;
+background-image: url("loading.gif");
+background-repeat: no-repeat;
+background-position: center;
+opacity: 0.75;
+}
+
+.dialogbox{
+	background: white;
+	position: inherit;
+	display: inline-block;
+	vertical-align: middle;
+	line-height: 30px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	border-radius: 10px;		
+	width: 70%;
+	padding: 10px;
+}
+
+#searchform {
+	float: right;
+	margin-right: -1px;
+	margin-left: -50px;
+	position: relative;
+	width: 25%;
+	margin: 1px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+#footorder {
+width: 100%;
+margin: -100px auto 0;
+height: 100px;
+position: relative;
+}
+
+</style>
+</header>
+<body>
+<h2>World Twitter Conversations about Women and Violence</h2>
+<h4>most commonly mentioned words are LARGER -- what's the conversation about this hour?</h4>
+<div id="searchform">	
+	<p>Choose a search topic: </p>
+	<input type="radio" id="DV" name="toggleterm" value="DV" checked="checked" /><label for="DV">Domestic Violence</label>	
+	</br>
+	<input type="radio" id="SA" name="toggleterm" value="SA" /><label for="SA">Sexual Assault</label>	
+	</br>
+	<input type="radio" id="ST" name="toggleterm" value="ST" /><label for="ST">Stalking</label>	
+	<p>	Click on a word.<p>
+</div>
+<div id="loadscreen">
+</div>
+</body>
