@@ -7,6 +7,7 @@
 
 $(document).ready(function() {	
 	
+	var twoa=new Codebird; // initialize Codebird for Twitter oAuth -- easy library
 	var fill = d3.scale.category20(); // sets the Word cloud to use some default colors.
 	var search_term='domestic violence'; //default search term
 	var toggled=0;
@@ -16,13 +17,16 @@ $(document).ready(function() {
 	var no_duplicates_words_array=[]; //words array filtering out duplicates
 	var justwho_words_array=[]; //words array just getting twitter users (i.e. "@" signs)
 	var filtered_tweets=[]; //setting an array for the individual TWEET strings in case we want them later
+	var filtered_tweet_id=[];
 	var x=$("#loadscreen").width(); //dynamic width/height sizes. CSS sets width to a % so it can display okay on more screens.
 	var y=$("#loadscreen").height();
+	var drawcloudtoggle=0; //toggles to make sure a cloud isn't drawn a second time if oAuth updates
 	
 	//setup the form for switching between different types of searches -- DV, SA, ST
 	
 	$('[name=toggleterm]').click(function(){
 		toggled=1;		
+		drawcloudtoggle=0;
 		var input=$(this).val();		
 	switch(input)
 		{
@@ -39,7 +43,6 @@ $(document).ready(function() {
 	function get_AllTweets(){
 	//BEGIN OAuth block -- needed under Twitter API to access
 		//all apps have a consumer key/secret, register your app at dev.twitter.com/apps
-		var twoa=new Codebird;
 		twoa.setConsumerKey("mJXPB53dFR3uZYGJSq2xQ", "Y7vkTPEejPJSOvvyFLkHrxqMpjmVrCFPcKXUDiOWWkE");
 		twoa.__call("oauth2_token", {}, function (data) {
 			console.log(data);
@@ -74,9 +77,7 @@ $(document).ready(function() {
 	//set our loadscreen to display as data comes in
 	$("#loadscreen").fadeIn(600, function(){$(this).show();});
 	//CHANGE HERE FOR NEW API 1.1
-	twoa.__call(
-	"search_tweets", 
-	"q="+search_term+"&count=60",
+	twoa.__call("search_tweets", "q="+search_term+"&count=60",
 	//$.getJSON("https://api.twitter.com/1.1/search/tweets.json?q="+search_term+";rpp=60&amp;callback=?", //75 works okay
 	//$.getJSON("http://search.twitter.com/search.json?q="+search_term+";rpp=60&amp;callback=?", //75 works okay
 	//OKAY, so we have our TWITTER DATA and now need a CALLBACK to do stuff with that data:	
@@ -93,8 +94,8 @@ $(document).ready(function() {
 			});
 			$.each(filtered_obj, function(index, val) {
 				filtered_tweets[index]=val.text; //this pops the TEXT (the tweet!) from each results object onto an ARRAY in case we want a whole tweet later
+				filtered_tweet_id[index]=val.id_str; // pops the ID in case we need it later
 			});						
-			
 			//now we want to take that STRING and move EACH INDIVIDUAL WORD into an array, each word being on its own index
 			for(var i=0, j=0; i<filtered_string.length; i++) {
 			if (filtered_string[i] == " "){j++;} 
@@ -148,6 +149,9 @@ $(document).ready(function() {
 	  
   
   function layout_Cloud(){
+	//make sure not drawing a second if already drawn
+  if(!drawcloudtoggle){
+  drawcloudtoggle=1;
   d3.layout.cloud().size([x, y])
 		//.words(function(d){return {text: d.key, size: 10+d.value*4};})
       .words(no_duplicates_words_array.map(function(d) {
@@ -158,7 +162,8 @@ $(document).ready(function() {
       .fontSize(function(d) { return d.size; })
       .on("end", draw_Cloud)
       .start();
-	  }
+	}
+  }
   function draw_Cloud(words){	      
 	d3.select("body").append("svg").attr("class", "svgclass")
         .attr("width", x)
@@ -181,6 +186,8 @@ $(document).ready(function() {
 	//fadeout the loadscreen after load
 	$("#loadscreen").fadeOut(800, function(){$(this).hide();});
 	};
+	
+	
   function show_Node_Tweets(d){  
 	// console.log("Show node tweets!");
 	// console.log(d);
@@ -195,14 +202,23 @@ $(document).ready(function() {
 	var list_of_tweets=[];	
 	var list_of_tweets_string='';
 	var list_of_tweets_linked='';
+	var list_of_tweets_id='';
 	//filter tweets based on the word moused over
-	list_of_tweets=filtered_tweets.filter(function(item, index, array){
-		if(filter_word.test(item)) { return item;}
+	list_of_tweets_index=filtered_tweets.filter(function(item, index, array){
+		if(filter_word.test(item)) {
+		list_of_tweets_id=filtered_tweet_id[index]; // leaves me with the last most recent tweet's ID, which is what I want for display! (avoids broken Twitter links)
+		return item;
+		}
 		});
-	$.each(list_of_tweets, function(index, val) {
-		list_of_tweets_string=list_of_tweets_string+val; 
-	});
-	list_of_tweets_linked=list_of_tweets_string.autoLink({ target: "_blank"});
+	/*list_of_tweets=filtered_tweets.filter(function(item, index, array){
+		if(filter_word.test(item)) { return item;}
+		});*/
+	/*$.each(list_of_tweets_index, function(index, val) {
+		list_of_tweets_id=filtered_tweet_id[val];*/
+		
+	//deprecated list_of_tweets_string=list_of_tweets_string+val;});	
+	//deprecated list_of_tweets_linked=list_of_tweets_string.autoLink({ target: "_blank"});
+	
 	d3.select(this).transition().duration(700).style("font-size", d.size + 34 +"px"); //this ANIMATES the word bigger a bit
 	//d3.select(this).transition().duration(1).attr("transform", "rotate("+rotateback+")"); //this rotates back word to horizontal reading
 	//d3.select(this).transition().duration(400).attr("transform", "translate("+xcenter+","+ycenter+")");//+x/2+","+y/2+")");	
@@ -211,7 +227,17 @@ $(document).ready(function() {
 	//tooltip_div.html(currentword+": "+list_of_tweets).style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
 	//INSTEAD of popup tooltip, use a LIGHTBOX
 	$(this).click(function(){		
-		searchform_div.html('<strong>'+currentword+': </strong> '+list_of_tweets_linked);
+		//$.getJSON("https://api.twitter.com/1/statuses/oembed.json?id="+list_of_tweets_id+"&align=center", function(data){
+		twoa.__call("statuses_oembed", "id="+list_of_tweets_id, function(data){
+			var tweet_html=data.html;
+			var tweet_url=data.url;
+			searchform_div.html(tweet_html+'<p><a href="'+tweet_url+'" target="_blank">Connect to Tweet on Twitter</a></p>');
+			}, true);
+		
+		//pull from Twitter
+		//deprecated searchform_div.html('<strong>'+currentword+': </strong> '+list_of_tweets_linked);
+		
+		
 		/*This creates a fade in black mask to display tweet content.
 		$('#lightbox').show();		
         lightbox_div.html(currentword+': '+list_of_tweets+'</br>'+'<button name="hidebutton" type="button">OK</button>');

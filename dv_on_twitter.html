@@ -10,10 +10,12 @@
 <script src="oauth.js"></script>
 <script src="sha1.js"></script>
 <script src="dv_on_twitter_app.js"></script>
+<script src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <header>
 <title>Words Associated with Domestic Violence, Stalking, and Sexual Assault</title>
 <style>
+
 div.tooltip {   
   position: absolute;             
   text-align: center;           
@@ -25,6 +27,10 @@ div.tooltip {
   border: 0px;      
   border-radius: 8px;           
   pointer-events: none;         
+}
+
+#container {
+height: 100%;
 }
 
 #loadscreen{
@@ -68,27 +74,39 @@ opacity: 0.75;
 	box-sizing: border-box;
 }
 
-#footorder {
-width: 100%;
-margin: -100px auto 0;
-height: 100px;
-position: relative;
+#footer {
+bottom: 0;
+height: 50px;
+border-radius: 10px;
+position: absolute;
 }
 
 </style>
 </header>
+<div id="container">
 <body>
-<h2>World Twitter Conversations about Women and Violence</h2>
-<h4>most commonly mentioned words are LARGER -- what's the conversation about this hour?</h4>
-<div id="searchform">	
-	<p>Choose a search topic: </p>
-	<input type="radio" id="DV" name="toggleterm" value="DV" checked="checked" /><label for="DV">Domestic Violence</label>	
-	</br>
-	<input type="radio" id="SA" name="toggleterm" value="SA" /><label for="SA">Sexual Assault</label>	
-	</br>
-	<input type="radio" id="ST" name="toggleterm" value="ST" /><label for="ST">Stalking</label>	
-	<p>	Click on a word.<p>
-</div>
-<div id="loadscreen">
+	<div id="head text">
+		<h2>World Twitter Conversations about Women and Violence</h2>
+		<h4>most commonly mentioned words are LARGER -- what's the conversation about this hour?</h4>
+	</div>
+	<div id="searchform">	
+		<p>Choose a search topic: </p>
+		<input type="radio" id="DV" name="toggleterm" value="DV" checked="checked" /><label for="DV">Domestic Violence</label>	
+		</br>
+		<input type="radio" id="SA" name="toggleterm" value="SA" /><label for="SA">Sexual Assault</label>	
+		</br>
+		<input type="radio" id="ST" name="toggleterm" value="ST" /><label for="ST">Stalking</label>	
+		<p>	Click on a word.<p>
+	</div>
+	<div id="loadscreen">
+	
+	</div>
+	<div id="footer">
+		<h6>Created by <a href="http://www.github.com/mrmra" target="_blank">MrA </a></h6>
+		<h2>If you liked this data informatic, please support the Alliance by <a href="http://www.ivsha.org/what-we-do/donations/" target="_blank"> donating </a> or purchasing something from the Alliance's <a href="http://www.ivsha.org/store/" target="_blank">online awareness store</a>.
+		<p> <a href="http://www.ivsha.org">Click here to return to the Alliance.</a> </p>
+		</h2>
+	</div>
 </div>
 </body>
+</html>
