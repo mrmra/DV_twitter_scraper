@@ -207,42 +207,33 @@ $(document).ready(function() {
 	list_of_tweets_index=filtered_tweets.filter(function(item, index, array){
 		if(filter_word.test(item)) {
 		list_of_tweets_id=filtered_tweet_id[index]; // leaves me with the last most recent tweet's ID, which is what I want for display! (avoids broken Twitter links)
+		list_of_tweets_string=item; //pulls the last tweet
 		return item;
 		}
-		});
-	/*list_of_tweets=filtered_tweets.filter(function(item, index, array){
-		if(filter_word.test(item)) { return item;}
-		});*/
-	/*$.each(list_of_tweets_index, function(index, val) {
-		list_of_tweets_id=filtered_tweet_id[val];*/
-		
-	//deprecated list_of_tweets_string=list_of_tweets_string+val;});	
-	//deprecated list_of_tweets_linked=list_of_tweets_string.autoLink({ target: "_blank"});
+	});
+	
+	/*this pulls ALL the tweets, but we just wanted the last, as above, to avoid broken links
+		$.each(list_of_tweets_index, function(index, val) {
+		list_of_tweets_id=filtered_tweet_id[val];
+	list_of_tweets_string=list_of_tweets_string+val;});
+	*/	
+	
+	list_of_tweets_linked=list_of_tweets_string.autoLink({ target: "_blank"});
 	
 	d3.select(this).transition().duration(700).style("font-size", d.size + 34 +"px"); //this ANIMATES the word bigger a bit
-	//d3.select(this).transition().duration(1).attr("transform", "rotate("+rotateback+")"); //this rotates back word to horizontal reading
-	//d3.select(this).transition().duration(400).attr("transform", "translate("+xcenter+","+ycenter+")");//+x/2+","+y/2+")");	
-	//POPUP tooltip!	
-	//tooltip_div.transition().duration(200).style("opacity", .99);
-	//tooltip_div.html(currentword+": "+list_of_tweets).style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
-	//INSTEAD of popup tooltip, use a LIGHTBOX
+
 	$(this).click(function(){		
+	/*twoa call to slow on their servers, so back to old way.
 		//$.getJSON("https://api.twitter.com/1/statuses/oembed.json?id="+list_of_tweets_id+"&align=center", function(data){
 		twoa.__call("statuses_oembed", "id="+list_of_tweets_id, function(data){
 			var tweet_html=data.html;
 			var tweet_url=data.url;
 			searchform_div.html(tweet_html+'<p><a href="'+tweet_url+'" target="_blank">Connect to Tweet on Twitter</a></p>');
-			}, true);
+			}, true);*/
 		
-		//pull from Twitter
-		//deprecated searchform_div.html('<strong>'+currentword+': </strong> '+list_of_tweets_linked);
+		searchform_div.html('<strong>'+currentword+': </strong> '+list_of_tweets_linked);
 		
-		
-		/*This creates a fade in black mask to display tweet content.
-		$('#lightbox').show();		
-        lightbox_div.html(currentword+': '+list_of_tweets+'</br>'+'<button name="hidebutton" type="button">OK</button>');
-		$('input[name="hidebutton"]').click(function(){console.log("clicked HIDE");$('#lightbox').hide();});
-		//d3 styling deprecated [...].style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");*/
+				
 	});	  
 	  
 	};
